@@ -3,6 +3,7 @@ import { Avatar, Paper, Grid, Typography, Container, Button } from '@material-ui
 import LockOpen from "@material-ui/icons/LockOpen";
 import { GoogleLogin } from 'react-google-login'
 import Icon from "./Icon";
+import { useDispatch } from 'react-redux'
 
 import Input from "./input";
 import  useStyles from './styles'
@@ -18,7 +19,7 @@ import  useStyles from './styles'
 
     const [showPassword, setShowPassword] = useState(false)
     const [isSignup, setIsSignup] = useState(false);
-    
+    const dispatch = useDispatch
 
     const handleSubmit = () =>{
 
@@ -28,11 +29,18 @@ import  useStyles from './styles'
     };
 
     const googleSuccess = async (res) => {
-        console.log(res)
-    };
+        const result = res?.profileObj; // cannot get property profileObj of undefined 
+        const token = res?.tokenId; // cannot get property profileObj of undefined 
+        try{
+            dispatch({ type : 'AUTH' , data: { result, token } });
+        }  catch(error) {
+            console.log(error)
+        }    
+     };
 
-    const googleFailure = () => {
-        console.log("Google Sign In was unsuccesful. Try Again Later");
+    const googleFailure = (error) => {
+        console.log(error)
+        console.log("Google Sign In was unsuccesful. Try Again Later")
     };
     
     const classes = useStyles();
